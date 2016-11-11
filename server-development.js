@@ -1,9 +1,12 @@
 var path = require('path');
 var express = require('express');
-var webpack = require('webpack');
-var config = require('./webpack-development.config');
 var port = process.env.PORT || 8080;
 var app = express();
+
+(function() {
+
+var webpack = require('webpack');
+var config = require('./webpack-development.config');
 var compiler = webpack(config);
 
 app.use(require('webpack-dev-middleware')(compiler, {
@@ -11,7 +14,11 @@ app.use(require('webpack-dev-middleware')(compiler, {
   publicPath: config.output.publicPath
 }));
 
-app.use(require('webpack-hot-middleware')(compiler));
+app.use(require('webpack-hot-middleware')(compiler, {
+    log: console.log, path: '/__webpack_hmr', heartbeat: 10 * 1000
+}));
+})();
+
 app.use(express.static(path.join(__dirname, "assets")));
 
 app.get(['*.js','*.png','*.css','*.map','*.ico'], function(req, res) {

@@ -1,2 +1,2 @@
 # react-redux-apollo-mongo-passport-example
-an example for react-redux apollo, with mongo passport backend support
+an example for universal react-redux apollo application, with mongo passport backend support.

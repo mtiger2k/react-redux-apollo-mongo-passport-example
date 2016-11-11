@@ -7,8 +7,9 @@ import errorHandler from 'express-error-handler';
 import envs from 'envs';
 import qs from 'qs'
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/server';
 import { Router, match, RouterContext } from 'react-router';
+import { ReduxAsyncConnect, loadOnServer } from 'redux-connect';
 import { routes } from './build/routes';
 import settings from './build/shared/settings';
 import ReactDOMStream from 'react-dom-stream/server';
@@ -29,6 +30,8 @@ app.use(serveStatic(path.join(__dirname, 'public', 'assets')));
 import { Provider } from 'react-redux'
 import configureStore from './build/shared/store/configure-store'
 import { fetchPostsAsync } from './build/shared/api/fetch-posts'
+import Html from './build/shared/helpers/Html';
+import { StyleSheetServer } from 'aphrodite'
 
 const appRoutes = (app) => {
   app.get('*', (req, res) => {
@@ -39,45 +42,27 @@ const appRoutes = (app) => {
         res.redirect(302, redirectLocation.pathname + redirectLocation.search);
       } else if (props) {
 
-      fetchPostsAsync(posts => {
         // Compile an initial state
         const isFetching = false;
         const lastUpdated = Date.now()
-        const initialState = {
-           posts,
-           isFetching,
-           lastUpdated
-        }
+        const initialState = {};
         // Create a new Redux store instance
         const store = configureStore(initialState)
-        // Render the component to a string
-        res.write(`<!DOCTYPE html>
-          <html>
-            <head>
-              <meta charSet="utf-8" />
-              <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-              <meta name="viewport" content="width=device-width, 
-                initial-scale=1, maximum-scale=1, user-scalable=no"/>
-              <link async href='https://fonts.googleapis.com/css?family=Bitter' rel='stylesheet' type='text/css'/>
-              <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" />
-             <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
-             <link rel="stylesheet" type="text/css" href="/app.css" />
-                <title>${settings.title}</title>
-                </head>
-                 <script>
-                  window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}
-                 </script>
-                <body><div id="app">`);
-                 const stream = ReactDOMStream.renderToString(
-                 <Provider store={store}>
-                   <RouterContext {...props} />
-                 </Provider>);
-                 stream.pipe(res, {end: false});
-                 stream.on("end", ()=> {
-                     res.write(`</div><script src="/bundle.js"></script></body></html>`);
-                     res.end();
-                 });''
-               })
+
+      loadOnServer({ ...props, store, helpers: {}}).then(() => {
+
+        const component = (
+         <Provider store={store}>
+           <ReduxAsyncConnect {...props} />
+         </Provider>
+        );
+        const { htmlContent, css } = StyleSheetServer.renderStatic(() => ReactDOM.renderToString(component));
+
+         let html = ReactDOM.renderToString(<Html title={settings.title} content={htmlContent} aphroditeCss={css} store={store}/>);
+         res.status(200);
+         res.send('<!doctype html>\n' + html);
+
+        })
         } else {
         res.sendStatus(404);
       }

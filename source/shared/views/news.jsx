@@ -2,18 +2,31 @@
 
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
+import { asyncConnect } from 'redux-connect';
 import Posts from './posts';
+import { fetchPostsIfNeeded } from '../actions';
 
-class App extends Component {
+@asyncConnect([{
+  promise: ({ store: { dispatch, getState } }) => {
+    if (!getState().rootReducer.posts)
+        return dispatch(fetchPostsIfNeeded());
+    else
+        return Promise.resolve();
+  }
+}])
+@connect(
+  state => ({
+    receivePosts: {
+      posts: state.rootReducer.posts,
+      isFetching: state.rootReducer.isFetching,
+      lastUpdated: state.rootReducer.lastUpdated
+    }
+  }))
+export default class App extends Component {
   constructor(props) {
     super(props)
     this.state={};
     this.state._activePost=-1;
-  }
-
-  componentDidMount() {
-    const { fetchPostsIfNeeded, dispatch } = this.props
-    dispatch(fetchPostsIfNeeded())
   }
 
   handleClickCallback(i){
@@ -56,20 +69,7 @@ App.propTypes = {
     isFetching: PropTypes.bool.isRequired,
     lastUpdated: PropTypes.number
   }),
-  dispatch: PropTypes.func.isRequired,
-  fetchPostsIfNeeded: PropTypes.func.isRequired
 }
 
-function mapStateToProps(state) {
-  return {
-    receivePosts: {
-      posts: ('posts' in state) ?  state.posts : [],
-      isFetching: ('isFetching' in state) ? state.isFetching : true,
-      lastUpdated: ('lastUpdated' in state) ? state.lastUpdated : null
-    }
-  }
 
-}
-
-export default connect(mapStateToProps)(App)
 
