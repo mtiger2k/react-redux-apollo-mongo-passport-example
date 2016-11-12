@@ -11,11 +11,14 @@ import Counter from '../shared/views/counter';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import Login from '../shared/views/login';
+
 const routes= <Route path="/" name="Shared App" component={Layout} >
   <Route name="About" path="about" component={About} />
   <Route name="Calculator" path="calculator" component={Calculator} />
   <Route name="News" path="news" component={News} />
   <Route name="Counter" path="counter" component={Counter} />
+  <Route name="Login" path="loginForm" component={Login} />
   <IndexRoute name="Welcome" component={App} />
   <Route path="*" name="Error" component={Error} />
 </Route>

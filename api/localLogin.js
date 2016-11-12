@@ -42,6 +42,10 @@ export function setupLocalLogin(app) {
     res.send({user: req.user, token: tokenForUser(req.user)});
   });
 
+  app.get('/loadAuth', (req, res) => {
+    res.send(req.user || null);
+  })
+
   app.get('/logout', (req, res) => {
     req.logout();
     res.redirect('/');

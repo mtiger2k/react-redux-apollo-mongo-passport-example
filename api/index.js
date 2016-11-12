@@ -10,6 +10,7 @@ import { subscriptionManager } from './subscriptions';
 
 import { setupLocalLogin } from './localLogin'
 import schema from './schema';
+import * as CounterService from './services/countService'
 
 require('dotenv').config();
 
@@ -35,7 +36,8 @@ app.use('/graphql', graphqlExpress((req) => {
   return {
     schema,
     context: {
-
+      user: req.user,
+      counterService: CounterService
     },
   };
 }));

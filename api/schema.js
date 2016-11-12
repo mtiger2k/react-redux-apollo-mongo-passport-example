@@ -1,7 +1,6 @@
 import { merge } from 'lodash';
 import { makeExecutableSchema, addErrorLoggingToSchema } from 'graphql-tools';
 import { pubsub } from './subscriptions';
-import * as CounterService from './services/countService'
 
 const rootSchema = [`
 
@@ -14,6 +13,12 @@ type Count {
 type Query {
   # Counter
   count: Count
+  
+  currentUser: User
+}
+
+type User {
+  username: String
 }
 
 type Mutation {
@@ -41,13 +46,16 @@ schema {
 const rootResolvers = {
     Query: {
         count(ignored1, ignored2, context) {
-            return CounterService.getCount();
+            return context.counterService.getCount();
+        },
+        currentUser(root, args, context) {
+            return context.user || null;
         },
     },
     Mutation: {
         addCount(_, { amount }, context) {
-            return CounterService.addCount(amount)
-                    .then(() => CounterService.getCount())
+            return context.counterService.addCount(amount)
+                    .then(() => context.counterService.getCount())
         .then(count => {
                 pubsub.publish('countUpdated', count);
             return count;

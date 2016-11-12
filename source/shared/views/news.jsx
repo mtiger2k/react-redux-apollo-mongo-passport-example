@@ -6,14 +6,6 @@ import { asyncConnect } from 'redux-connect';
 import Posts from './posts';
 import { fetchPostsIfNeeded } from '../actions';
 
-@asyncConnect([{
-  promise: ({ store: { dispatch, getState } }) => {
-    if (!getState().rootReducer.posts)
-        return dispatch(fetchPostsIfNeeded());
-    else
-        return Promise.resolve();
-  }
-}])
 @connect(
   state => ({
     receivePosts: {
@@ -21,13 +13,19 @@ import { fetchPostsIfNeeded } from '../actions';
       isFetching: state.rootReducer.isFetching,
       lastUpdated: state.rootReducer.lastUpdated
     }
-  }))
-export default class App extends Component {
+  }),
+    dispatch => ({fetchPostsIfNeeded, dispatch}))
+export default class News extends Component {
   constructor(props) {
     super(props)
     this.state={};
     this.state._activePost=-1;
   }
+
+    componentDidMount() {
+        const { fetchPostsIfNeeded, dispatch } = this.props
+        dispatch(fetchPostsIfNeeded())
+    }
 
   handleClickCallback(i){
     this.setState({_activePost:i});
@@ -36,34 +34,42 @@ export default class App extends Component {
   render() {
     const { posts, isFetching, lastUpdated } = this.props.receivePosts
     const { _activePost } = this.state;
-    return (
-      <div>
-        <p>
-          {lastUpdated &&
-            <span>
+      if (isFetching) {
+          return (
+              <Row>
+                Loading...
+              </Row>
+          );
+      } else {
+          return (
+              <div>
+                <p>
+                    {lastUpdated &&
+                    <span>
               Last updated at {new Date(lastUpdated)
-                .toLocaleTimeString()}.
+                        .toLocaleTimeString()}.
             </span>
-          }
-        </p>
-        {posts && isFetching && posts.length === 0 &&
-          <h2>Loading...</h2>
-        }
-        {posts && !isFetching && posts.length === 0 &&
-          <h2>Empty.</h2>
-        }
-        {posts && posts.length > 0 &&
-          <div style={{ opacity: isFetching ? 0.5 : 1 }}>
-            <Posts posts={posts} activePost={_activePost} 
-              onClickHandler={this.handleClickCallback.bind(this)} />
-          </div>
-        }
-      </div>
-    )
+                    }
+                </p>
+                  {posts && isFetching && posts.length === 0 &&
+                  <h2>Loading...</h2>
+                  }
+                  {posts && !isFetching && posts.length === 0 &&
+                  <h2>Empty.</h2>
+                  }
+                  {posts && posts.length > 0 &&
+                  <div style={{opacity: isFetching ? 0.5 : 1}}>
+                    <Posts posts={posts} activePost={_activePost}
+                           onClickHandler={this.handleClickCallback.bind(this)}/>
+                  </div>
+                  }
+              </div>
+          )
+      }
   }
 }
 
-App.propTypes = {
+News.propTypes = {
   receivePosts: React.PropTypes.shape({
     posts: PropTypes.array.isRequired,
     isFetching: PropTypes.bool.isRequired,

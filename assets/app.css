@@ -1,24 +1,63 @@
-body {
-  font-family: 'Bitter', serif;
-  padding: 15px;
-  margin-top: 50px;
-  padding-bottom: 50px
+.media-vote {
+  display: table-cell;
+  vertical-align: top;
+  padding-right: 10px;
+}
+.media-vote .btn-score {
+  border: none;
+  background-color: transparent;
+  font-size: 1.3em;
+  padding: 3px 12px;
+  line-height: 0;
+  color: rgba(91, 192, 222, 0.52);
+}
+.media-vote .btn-score:hover, .media-vote .btn-score.active {
+  color: #5bc0de;
+  box-shadow: none;
+}
+.media-vote .btn-score:active {
+  color: #5BA2DE;
+  box-shadow: none;
+}
+.media-vote .btn-score:focus {
+  outline: none;
+}
+.media-vote .vote-score {
+  text-align: center;
+  font-size: 1.2em;
 }
 
-.header {
-  padding: 10px;
-  font-size: 18px;
-margin: 5px; }
-footer{
-  position:fixed;
-  bottom:0;
-  background: black;
-  width:100%;
-  padding:10px;
-  color:white;
-  left:0;
-  text-align:center;
+.invisible {
+  visibility: hidden;
 }
+
+body {
+  padding-bottom: 60px;
+}
+
+.comment-box {
+  border-top:1px solid black;
+  padding: 5px;
+}
+
+#footer {
+  position: fixed;
+  bottom: 0px;
+  text-align: center;
+  width: 100%;
+  background-color: #f0f0f0;
+  border-top: 1px solid #c4c4c4;
+  padding-top: 10px;
+}
+
+#footer li {
+  display: inline;
+  margin: 40px 10px;
+  color: #999;
+  font-size: 13px;
+}
+
+
 p{
   transition: all .5s ease-in;
   -webkit-animation-duration: 1s;

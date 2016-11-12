@@ -42,13 +42,13 @@ class Counter extends React.Component {
     const { loading, count, addCount } = this.props;
     if (loading) {
       return (
-        <Row className="text-center">
+        <Row>
           Loading...
         </Row>
       );
     } else {
       return (
-        <Row className="text-center">
+        <Row>
           <div>
             Current count, is {count.amount}. This is being stored server-side in the database and using Apollo subscription for real-time updates.
           </div>

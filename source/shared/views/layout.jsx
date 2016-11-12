@@ -1,28 +1,52 @@
-import React from 'react'
-import { Grid, Row, Col, Nav, Navbar } from 'react-bootstrap';
-import Breadcrumbs from 'react-breadcrumbs';
-import Settings from '../settings';
-export default class Layout extends React.Component {
-  render() {
-    return (
-      <Grid>
-        <Navbar componentClass="header"
-          fixedTop inverse>
-          <h1 center style={{color:"#fff"}} className="logo">
-            {Settings.title}
-            </h1>
-          <Nav role="navigation" eventKey={0}
-          pullRight>
-        </Nav>
-      </Navbar>
-      <Breadcrumbs {...this.props} setDocumentTitle={true} />
-      {this.props.children}
-      <footer>
-        Server-rendered Shared App
-      </footer>
-    </Grid>
-    )
-  }
-}
+import React from 'react';
+import { Link } from 'react-router';
 
+import Profile from '../components/Profile';
+import NavbarLink from '../components/NavbarLink';
 
+const Layout = ({ children, params, location }) => (
+  <div>
+    <nav className="navbar navbar-default">
+      <div className="container">
+        <div className="navbar-header">
+          <Link className="navbar-brand" to="/">SharedApp</Link>
+        </div>
+
+        <ul className="nav navbar-nav">
+          <NavbarLink
+            title="Calculator"
+            href="/calculator"
+            active={location.pathname.indexOf('calculator') !== -1}
+          />
+          <NavbarLink
+            title="News"
+            href="/news"
+            active={location.pathname.indexOf('news') !== -1}
+          />
+          <NavbarLink
+            title="Counter"
+            href="/counter"
+            active={location.pathname.indexOf('counter') !== -1}
+          />
+        </ul>
+
+        <Profile />
+      </div>
+    </nav>
+    <div className="container">
+      {children}
+    </div>
+  </div>
+);
+
+Layout.propTypes = {
+  location: React.PropTypes.shape({
+    pathname: React.PropTypes.string.isRequired,
+  }).isRequired,
+  params: React.PropTypes.shape({
+    type: React.PropTypes.string,
+  }).isRequired,
+  children: React.PropTypes.element,
+};
+
+export default Layout;
