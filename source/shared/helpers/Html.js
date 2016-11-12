@@ -4,7 +4,7 @@ export default class Html extends Component {
 
     render() {
 
-        const {title, content, aphroditeCss, store} = this.props;
+        const {title, content, aphroditeCss, state} = this.props;
 
            return (
               <html lang="en-us">
@@ -13,6 +13,7 @@ export default class Html extends Component {
               <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
               <meta name="viewport" content="width=device-width,
                 initial-scale=1, maximum-scale=1, user-scalable=no"/>
+            <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
               <link async href='https://fonts.googleapis.com/css?family=Bitter' rel='stylesheet' type='text/css'/>
               <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" />
              <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
@@ -22,7 +23,7 @@ export default class Html extends Component {
                 </head>
                 <body><div id="app" dangerouslySetInnerHTML={{ __html: content }} />
                     <script
-                      dangerouslySetInnerHTML={{ __html: `window.__INITIAL_STATE__=${JSON.stringify(store.getState())};StyleSheet.rehydrate(${JSON.stringify(aphroditeCss.renderedClassNames)});` }}
+                      dangerouslySetInnerHTML={{ __html: `window.__APOLLO_STATE__=${JSON.stringify(state)};` }}
                       charSet="UTF-8"
                     />
                     <script src="/bundle.js"></script>

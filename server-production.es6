@@ -8,6 +8,12 @@ import envs from 'envs';
 import qs from 'qs'
 import React from 'react';
 import ReactDOM from 'react-dom/server';
+import proxy from 'http-proxy-middleware';
+
+import { createNetworkInterface } from 'apollo-client';
+import { ApolloProvider } from 'react-apollo';
+import { getDataFromTree } from 'react-apollo/server';
+
 import { Router, match, RouterContext } from 'react-router';
 import { ReduxAsyncConnect, loadOnServer } from 'redux-connect';
 import { routes } from './build/routes';
@@ -29,9 +35,23 @@ app.use(serveStatic(path.join(__dirname, 'public', 'assets')));
 
 import { Provider } from 'react-redux'
 import configureStore from './build/shared/store/configure-store'
+import createApolloClient from './build/shared/helpers/create-apollo-client';
 import { fetchPostsAsync } from './build/shared/api/fetch-posts'
 import Html from './build/shared/helpers/Html';
 import { StyleSheetServer } from 'aphrodite'
+
+require('dotenv').config();
+
+const apiPort = process.env.API_PORT || 3010;
+const apiHost = `http://localhost:${apiPort}`;
+const apiUrl = `${apiHost}/graphql`;
+
+const apiProxy = proxy({ target: apiHost });
+app.use('/graphql', apiProxy);
+app.use('/graphiql', apiProxy);
+app.use('/login', apiProxy);
+app.use('/logout', apiProxy);
+
 
 const appRoutes = (app) => {
   app.get('*', (req, res) => {
@@ -45,22 +65,43 @@ const appRoutes = (app) => {
         // Compile an initial state
         const isFetching = false;
         const lastUpdated = Date.now()
-        const initialState = {};
-        // Create a new Redux store instance
-        const store = configureStore(initialState)
+
+          const client = createApolloClient({
+              ssrMode: true,
+              networkInterface: createNetworkInterface({
+                  uri: apiUrl,
+                  opts: {
+                      credentials: 'same-origin',
+                      // transfer request headers to networkInterface so that they're
+                      // accessible to proxy server
+                      // Addresses this issue: https://github.com/matthew-andrews/isomorphic-fetch/issues/83
+                      headers: req.headers,
+                  },
+              }),
+          });
+
+          const initialState = {};
+          // Create a new Redux store instance
+          const store = configureStore(initialState, client)
 
       loadOnServer({ ...props, store, helpers: {}}).then(() => {
 
         const component = (
-         <Provider store={store}>
+         <ApolloProvider client={client} store={store}>
            <ReduxAsyncConnect {...props} />
-         </Provider>
+         </ApolloProvider>
         );
-        const { htmlContent, css } = StyleSheetServer.renderStatic(() => ReactDOM.renderToString(component));
 
-         let html = ReactDOM.renderToString(<Html title={settings.title} content={htmlContent} aphroditeCss={css} store={store}/>);
-         res.status(200);
-         res.send('<!doctype html>\n' + html);
+          getDataFromTree(component).then((context) => {
+              const { htmlContent, css } = StyleSheetServer.renderStatic(() => ReactDOM.renderToString(component));
+
+              let html = ReactDOM.renderToString(<Html title={settings.title} content={htmlContent} aphroditeCss={css} state={{ apollo: { data: context.store.getState().apollo.data } }}/>);
+              res.status(200);
+              res.send('<!doctype html>\n' + html);
+              res.end();
+
+          }).catch(e => console.error('RENDERING ERROR:', e)); // eslint-disable-line no-console
+
 
         })
         } else {
