@@ -52,6 +52,20 @@ npm run build
 npm run start
 ```
 
+## Explanation
+
+#### Server-side Data Fetching
+
+Fullly leverage apollo [server side rendering](http://dev.apollodata.com/react/server-side-rendering.html).
+
+#### Client Side
+
+Use react-apllo and apollo-client to fetch data via graphql api.
+
+#### API Server
+
+Express with apollo server, using passport to authenticate.
+
 ---
 Thanks for checking this out.
 
