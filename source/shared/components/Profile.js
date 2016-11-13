@@ -1,31 +1,26 @@
 import React, {Component} from 'react';
 import { Link } from 'react-router';
-import {connect} from 'react-redux';
-import { asyncConnect } from 'redux-connect';
-import {loadAuth} from '../actions/auth'
+import { graphql } from 'react-apollo'
+import gql from 'graphql-tag'
 
-@asyncConnect([{
- promise: ({ store: { dispatch, getState } }) => {
- if (!getState().auth.authenticated)
-  return dispatch(loadAuth());
- else
-  return Promise.resolve();
- }
- }])
-@connect(
-  state => ({
-        currentUser: state.auth.currentUser,
-        loading: state.auth.loading
-    }),
-    dispatch => ({loadAuth, dispatch})
-)
-export default class Profile extends Component {
-
-    componentDidMount() {
-        const { loadAuth, dispatch, currentUser } = this.props;
-        if (!currentUser)
-          dispatch(loadAuth())
+const PROFILE_QUERY = gql`
+  query CurrentUserForLayout {
+    currentUser {
+      id
+      username
     }
+  }
+`;
+
+const currentUserData = graphql(PROFILE_QUERY, {
+        options: { forceFetch: true },
+        props: ({ data: { loading, currentUser } }) => ({
+        loading, currentUser
+    }),
+})
+
+@currentUserData
+export default class Profile extends Component {
 
   render() {
     let { loading, currentUser } = this.props;
@@ -60,5 +55,3 @@ Profile.propTypes = {
     username: React.PropTypes.string.isRequired,
   }),
 };
-
-

@@ -18,6 +18,7 @@ type Query {
 }
 
 type User {
+  id: String
   username: String
 }
 

@@ -29,7 +29,6 @@ const apiProxy = proxy({ target: apiHost });
 app.use('/graphql', apiProxy);
 app.use('/graphiql', apiProxy);
 app.use('/signin', apiProxy);
-app.use('/loadAuth', apiProxy);
 app.use('/logout', apiProxy);
 
 

@@ -5,7 +5,6 @@ import compression from 'compression';
 import cpFile from 'cp-file';
 import errorHandler from 'express-error-handler';
 import envs from 'envs';
-import qs from 'qs'
 import React from 'react';
 import ReactDOM from 'react-dom/server';
 import proxy from 'http-proxy-middleware';
@@ -15,10 +14,8 @@ import { ApolloProvider } from 'react-apollo';
 import { getDataFromTree } from 'react-apollo/server';
 
 import { Router, match, RouterContext } from 'react-router';
-import { ReduxAsyncConnect, loadOnServer } from 'redux-connect';
 import { routes } from './build/routes';
 import settings from './build/shared/settings';
-import ReactDOMStream from 'react-dom-stream/server';
 import serveStatic from 'serve-static';
 const port = process.env.PORT || 8080;
 const host = process.env.HOST || '0.0.0.0';
@@ -50,7 +47,6 @@ const apiProxy = proxy({ target: apiHost });
 app.use('/graphql', apiProxy);
 app.use('/graphiql', apiProxy);
 app.use('/signin', apiProxy);
-app.use('/loadAuth', apiProxy);
 app.use('/logout', apiProxy);
 
 
@@ -85,11 +81,9 @@ const appRoutes = (app) => {
           // Create a new Redux store instance
           const store = configureStore(initialState, client)
 
-      loadOnServer({ ...props, store, helpers: {}}).then(() => {
-
         const component = (
          <ApolloProvider client={client} store={store}>
-           <ReduxAsyncConnect {...props} />
+           <RouterContext {...props} />
          </ApolloProvider>
         );
 
@@ -103,8 +97,6 @@ const appRoutes = (app) => {
 
           }).catch(e => console.error('RENDERING ERROR:', e)); // eslint-disable-line no-console
 
-
-        })
         } else {
         res.sendStatus(404);
       }
