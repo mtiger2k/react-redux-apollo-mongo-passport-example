@@ -33,7 +33,6 @@ app.use(serveStatic(path.join(__dirname, 'public', 'assets')));
 import { Provider } from 'react-redux'
 import configureStore from './build/shared/store/configure-store'
 import createApolloClient from './build/shared/helpers/create-apollo-client';
-import { fetchPostsAsync } from './build/shared/api/fetch-posts'
 import Html from './build/shared/helpers/Html';
 import { StyleSheetServer } from 'aphrodite'
 
@@ -87,10 +86,10 @@ const appRoutes = (app) => {
          </ApolloProvider>
         );
 
-          getDataFromTree(component).then((context) => {
+          getDataFromTree(component).then(() => {
               const { htmlContent, css } = StyleSheetServer.renderStatic(() => ReactDOM.renderToString(component));
-
-              let html = ReactDOM.renderToString(<Html title={settings.title} content={htmlContent} aphroditeCss={css} state={{ apollo: { data: context.store.getState().apollo.data } }}/>);
+              const initialState = client.store.getState()[client.reduxRootKey].data;
+              let html = ReactDOM.renderToString(<Html title={settings.title} content={htmlContent} aphroditeCss={css} state={initialState}/>);
               res.status(200);
               res.send('<!doctype html>\n' + html);
               res.end();
