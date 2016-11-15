@@ -2,7 +2,6 @@
 
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { asyncConnect } from 'redux-connect';
 import Posts from './posts';
 import { fetchPostsIfNeeded } from '../actions';
 

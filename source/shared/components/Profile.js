@@ -2,22 +2,7 @@ import React, {Component} from 'react';
 import { Link } from 'react-router';
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-
-const PROFILE_QUERY = gql`
-  query CurrentUserForLayout {
-    currentUser {
-      id
-      username
-    }
-  }
-`;
-
-const currentUserData = graphql(PROFILE_QUERY, {
-        options: { forceFetch: true },
-        props: ({ data: { loading, currentUser } }) => ({
-        loading, currentUser
-    }),
-})
+import currentUserData from '../graphql/currentDataQuery'
 
 @currentUserData
 export default class Profile extends Component {

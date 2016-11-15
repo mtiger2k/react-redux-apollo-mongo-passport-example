@@ -4,24 +4,10 @@ import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import { browserHistory } from 'react-router';
 import axios from 'axios'
+import currentUserData from '../graphql/currentDataQuery'
 
 import LoginForm from '../forms/loginForm'
 
-const PROFILE_QUERY = gql`
-  query CurrentUserForLogin {
-    currentUser {
-      id
-      username
-    }
-  }
-`;
-
-const currentUserData = graphql(PROFILE_QUERY, {
-        options: { forceFetch: true },
-        props: ({ data: { loading, currentUser, updateQuery } }) => ({
-        loading, currentUser, updateQuery,
-    }),
-});
 
 @currentUserData
 export default class Login extends Component {
