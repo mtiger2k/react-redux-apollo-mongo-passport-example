@@ -33,6 +33,10 @@ app.use('/graphql', graphqlExpress((req) => {
     throw new Error('Query too large.');
   }
 
+  if (!req.user) {
+      throw new Error('Not authorized.');
+  }
+
   return {
     schema,
     context: {

@@ -1,0 +1,7 @@
+export const SIGN_IN = 'SIGN_IN'
+export const SIGN_IN_SUCCESS = 'SIGN_IN_SUCCESS'
+export const SIGN_IN_FAIL = 'SIGN_IN_FAIL'
+
+export const FETCH_USER = 'FETCH_USER'
+export const FETCH_USER_SUCCESS = 'FETCH_USER_SUCCESS'
+export const FETCH_USER_FAILED = 'FETCH_USER_FAILED'

@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
 import { Link } from 'react-router';
-import { graphql } from 'react-apollo'
-import gql from 'graphql-tag'
-import currentUserData from '../graphql/currentDataQuery'
+import { connect } from 'react-redux';
 
-@currentUserData
+@connect(
+    state=>({
+        loading: state.auth.loading,
+        currentUser: state.auth.currentUser
+    })
+)
 export default class Profile extends Component {
 
   render() {

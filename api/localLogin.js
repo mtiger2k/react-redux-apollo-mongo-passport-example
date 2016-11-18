@@ -35,11 +35,19 @@ export function setupLocalLogin(app) {
 
   // sign up and sign in are handled by auth controller
   app.post('/signin', passport.authenticate('local-login'), (req, res)=>{
-    res.send({id: req.user.id, username: req.user.username});
+    res.send(tokenForUser(req.user));
   });
 
   app.post('/signup', passport.authenticate('local-signup'), (req, res)=>{
     res.send({id: req.user.id, username: req.user.username});
+  });
+
+  app.get('/user', (req, res)=>{
+    if (req.user) {
+        res.send({id: req.user._id, username: req.user.username});
+    } else {
+        res.send(null);
+    }
   });
 
   app.get('/logout', (req, res) => {

@@ -19,6 +19,7 @@ export default class Index extends React.Component {
             <li><Link to="/calculator">Calculator</Link></li>
             <li><Link to="/news">News</Link></li>
             <li><Link to="/counter">Counter</Link></li>
+            <li><Link to="/test">Private page</Link></li>
             <li><Link to="/about">About</Link></li>
           </ul>
         </Col>

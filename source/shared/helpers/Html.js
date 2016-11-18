@@ -23,7 +23,7 @@ export default class Html extends Component {
                 </head>
                 <body><div id="app" dangerouslySetInnerHTML={{ __html: content }} />
                     <script
-                      dangerouslySetInnerHTML={{ __html: `window.__APOLLO_STATE__=${JSON.stringify(state)};` }}
+                      dangerouslySetInnerHTML={{ __html: `window.__INITIAL_STATE__=${JSON.stringify(state)};` }}
                       charSet="UTF-8"
                     />
                     <script src="/bundle.js"></script>

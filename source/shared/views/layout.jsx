@@ -28,6 +28,11 @@ const Layout = ({ children, params, location }) => (
             href="/counter"
             active={location.pathname.indexOf('counter') !== -1}
           />
+          <NavbarLink
+              title="Private"
+              href="/test"
+              active={location.pathname.indexOf('test') !== -1}
+          />
         </ul>
 
         <Profile />

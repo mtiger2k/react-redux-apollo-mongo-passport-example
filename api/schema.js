@@ -14,7 +14,6 @@ type Query {
   # Counter
   count: Count
   
-  currentUser: User
 }
 
 type User {
@@ -48,9 +47,6 @@ const rootResolvers = {
     Query: {
         count(ignored1, ignored2, context) {
             return context.counterService.getCount();
-        },
-        currentUser(root, args, context) {
-            return context.user || null;
         },
     },
     Mutation: {

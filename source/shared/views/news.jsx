@@ -2,9 +2,18 @@
 
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
+import { asyncConnect } from 'redux-connect';
 import Posts from './posts';
 import { fetchPostsIfNeeded } from '../actions';
 
+@asyncConnect([{
+    promise: ({ store: { dispatch, getState } }) => {
+        if (!getState().rootReducer.posts)
+            return dispatch(fetchPostsIfNeeded());
+        else
+            return Promise.resolve();
+    }
+}])
 @connect(
   state => ({
     receivePosts: {
@@ -21,10 +30,10 @@ export default class News extends Component {
     this.state._activePost=-1;
   }
 
-    componentDidMount() {
+    /*componentDidMount() {
         const { fetchPostsIfNeeded, dispatch } = this.props
         dispatch(fetchPostsIfNeeded())
-    }
+    }*/
 
   handleClickCallback(i){
     this.setState({_activePost:i});
