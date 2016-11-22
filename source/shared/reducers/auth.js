@@ -1,40 +1,32 @@
 import {
-    SIGN_IN, SIGN_IN_SUCCESS, SIGN_IN_FAIL,
-    FETCH_USER, FETCH_USER_SUCCESS, FETCH_USER_FAILED
+    SIGN_IN, SIGN_IN_SUCCESS, SIGN_IN_FAILED,
+    SIGN_OUT
 } from '../actions/types';
 
-export default function (auth = {logining: false, token: null, currentUser: null, loading: false}, action) {
+export default function (auth = {authenticated: false, token: null, logging: false, errorMsg: ''}, action) {
     switch (action.type) {
         case SIGN_IN:
             return Object.assign({}, auth, {
-                logining: true,
-                token: null
+                logging: true,
+                errorMsg: 'Logging...'
             })
         case SIGN_IN_SUCCESS:
             return Object.assign({}, auth, {
-                logining: false,
-                token: action.result.data
+                logging: false,
+                token: action.result.data,
+                authenticated: true,
+                errorMsg: ''
             })
-        case SIGN_IN_FAIL:
+        case SIGN_IN_FAILED:
             return Object.assign({}, auth, {
-                logining: false,
-                token: null
+                logging: false,
+                authenticated: false,
+                errorMsg: 'Incorrect username or password.'
             })
-
-        case FETCH_USER:
+        case SIGN_OUT:
             return Object.assign({}, auth, {
-                loading: true,
-                currentUser: null
-            })
-        case FETCH_USER_SUCCESS:
-            return Object.assign({}, auth, {
-                loading: false,
-                currentUser: action.result.data?action.result.data:null
-            })
-        case FETCH_USER_FAILED:
-            return Object.assign({}, auth, {
-                loading: false,
-                currentUser: null
+                authenticated: false,
+                token: null,
             })
         default:
             return auth

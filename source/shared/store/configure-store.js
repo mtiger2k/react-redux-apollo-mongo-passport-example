@@ -8,6 +8,7 @@ import { reducer as formReducer } from 'redux-form'
 
 import rootReducer from '../reducers'
 import auth from '../reducers/auth'
+import user from '../reducers/user'
 import DevTools from '../middleware/devtools';
 import promiseMiddleware from '../middleware/promiseMiddleware';
 
@@ -24,6 +25,7 @@ export default function configureStore(initialState, apolloClient) {
     combineReducers({
         rootReducer,
         auth,
+        user,
         reduxAsyncConnect,
         routing,
         form: formReducer,
@@ -35,4 +37,3 @@ export default function configureStore(initialState, apolloClient) {
 
   return store
 }
-

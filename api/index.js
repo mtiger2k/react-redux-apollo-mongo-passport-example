@@ -2,8 +2,8 @@ import path from 'path';
 import express from 'express';
 import { graphqlExpress, graphiqlExpress } from 'graphql-server-express';
 import bodyParser from 'body-parser';
-const mongoose = require('mongoose');
-
+import mongoose from 'mongoose';
+import passport from 'passport';
 import { createServer } from 'http';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 import { subscriptionManager } from './subscriptions';
@@ -23,7 +23,7 @@ app.use(bodyParser.json());
 
 setupLocalLogin(app);
 
-app.use('/graphql', graphqlExpress((req) => {
+app.use('/graphql', passport.authenticate('jwt', {session: false}), graphqlExpress((req) => {
   // Get the query, the same way express-graphql does it
   // https://github.com/graphql/express-graphql/blob/3fa6e68582d6d933d37fa9e841da5d2aa39261cd/src/index.js#L257
   const query = req.query.query || req.body.query;
@@ -45,6 +45,8 @@ app.use('/graphql', graphqlExpress((req) => {
     },
   };
 }));
+
+app.use(express.static('dist'));
 
 // Serve our helpful static landing page. Not used in production.
 app.get('/', (req, res) => {

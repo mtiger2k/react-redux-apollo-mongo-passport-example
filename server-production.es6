@@ -51,7 +51,6 @@ app.use('/graphql', apiProxy);
 app.use('/graphiql', apiProxy);
 app.use('/signin', apiProxy);
 app.use('/user', apiProxy);
-app.use('/logout', apiProxy);
 
 const routes = getRoutes();
 

@@ -3,8 +3,8 @@ import { redirectToLoginWithMessage } from '../shared/actions/auth';
 import { connect } from 'react-redux';
 
 const mapStateToProps = (state) => ({
-    loading: state.auth.loading,
-    currentUser: state.auth.currentUser
+    loading: state.user.loading,
+    currentUser: state.user.currentUser
 });
 const mapDispatchToProps = {
     redirectToLoginWithMessage
@@ -22,7 +22,7 @@ const privateRoute = (Wrapped) => connect(mapStateToProps, mapDispatchToProps)(c
 
     redirectIfNotLogged(props) {
         const {loading, currentUser} = props;
-        if (loading === false && !currentUser) {
+        if (!loading && !currentUser) {
             this.props.redirectToLoginWithMessage();
         }
     }

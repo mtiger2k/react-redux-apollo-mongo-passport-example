@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 
 @connect(
     state=>({
-        loading: state.auth.loading,
-        currentUser: state.auth.currentUser
+        isAuthenticated: state.auth.authenticated,
+        loading: state.user.loading,
+        currentUser: state.user.currentUser
     })
 )
 export default class Profile extends Component {
@@ -24,14 +25,14 @@ export default class Profile extends Component {
               <p className="navbar-text navbar-right">
               Logged as {currentUser.username}
       &nbsp;&nbsp;
-      <a href="/logout">Log out</a>
+      <Link to="/logout">Log out</Link>
           </p>
           </span>
       );
       }
       return (
           <p className="navbar-text navbar-right">
-          <Link to="/loginForm">Log in</Link>
+          <Link to="/login">Log in</Link>
           </p>
   );
   }

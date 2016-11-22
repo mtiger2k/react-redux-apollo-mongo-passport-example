@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 import loginValidation from './loginValidation'
 
@@ -12,6 +13,9 @@ const renderField = ({ input, label, type, meta: { touched, error, warning } }) 
     </div>
 )
 
+@connect(
+    state=>({errorMsg: state.auth.errorMsg})
+)
 @reduxForm({
     form: 'login',
     validate: loginValidation
@@ -19,9 +23,10 @@ const renderField = ({ input, label, type, meta: { touched, error, warning } }) 
 export default class LoginForm extends Component {
 
     render() {
-        const { handleSubmit, pristine, reset, submitting } = this.props
+        const { handleSubmit, pristine, reset, submitting, errorMsg } = this.props
         return (
             <form onSubmit={handleSubmit}>
+                {errorMsg && <div className="alert alert-danger">{errorMsg}</div>}
                 <Field name="username" className="form-control" component={renderField} type="text" label="Login name"/>
                 <Field name="password" className="form-control" component={renderField} type="password" label="Password"/>
                 <div>
@@ -31,4 +36,5 @@ export default class LoginForm extends Component {
             </form>
         );
     }
+
 }

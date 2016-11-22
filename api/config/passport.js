@@ -2,28 +2,13 @@
 
 // load all the things we need
 var LocalStrategy   = require('passport-local').Strategy;
+const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
+
 // load up the user model
 var User= require('../models/user.js');
 // expose this function to our app using module.exports
 module.exports = function(passport) {
-
-    // =========================================================================
-    // passport session setup ==================================================
-    // =========================================================================
-    // required for persistent login sessions
-    // passport needs ability to serialize and unserialize users out of session
-
-    // used to serialize the user for the session
-    passport.serializeUser(function(user, done) {
-        done(null, user.id);
-    });
-
-    // used to deserialize the user
-    passport.deserializeUser(function(id, done) {
-        User.findById(id, function(err, user) {
-            done(err, user);
-        });
-    });
 
     // =========================================================================
     // LOCAL SIGNUP ============================================================
@@ -112,5 +97,32 @@ module.exports = function(passport) {
         });
 
     }));
+
+    // Setup options for JWT Strategy
+    const jwtOptions = {
+        jwtFromRequest: ExtractJwt.fromAuthHeader(),
+        //secretOrKey: config.secret
+        secretOrKey: process.env.SECRET
+    }
+
+    // Create JWT Strategy
+    const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done) {
+        // See if the user ID in the payload exists in the database
+        User.findOne({ _id: payload.sub },'-password', function(err, user) {
+            if (err) { return done(err, false); }
+
+            // If it does, call down with user
+            if (user) {
+                done(null, user);
+
+            // If not, call done without a user object
+            } else {
+                done(null, false);
+            }
+
+        });
+    });
+
+    passport.use('jwt', jwtLogin);
 
 };

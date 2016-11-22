@@ -1,13 +1,11 @@
 import express from 'express';
 import passport from 'passport';
 import jwt from 'jwt-simple'
-import session from 'express-session';
 import mongoose from 'mongoose';
-var MongoStore = require('connect-mongo')(session);
 
 function tokenForUser(user) {
   const timestamp = new Date().getTime();
-  return jwt.encode({ sub: user.id, iat: timestamp }, process.env.SECRET);
+  return jwt.encode({ sub: user.id, iat: timestamp, username: user.username }, process.env.SECRET);
 }
 
 export function setupLocalLogin(app) {
@@ -18,23 +16,8 @@ export function setupLocalLogin(app) {
 
   require('./config/passport')(passport);
 
-  app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: true,
-    saveUninitialized: true,
-    store: new MongoStore({
-       mongooseConnection:mongoose.connection
-    }),
-    cookie:{maxAge:180*60*1000}
-  }));
-
-  app.use(passport.initialize());
-  app.use(passport.session());
-
-  app.use(express.static('dist'));
-
   // sign up and sign in are handled by auth controller
-  app.post('/signin', passport.authenticate('local-login'), (req, res)=>{
+  app.post('/signin', passport.authenticate('local-login', {session: false}), (req, res)=>{
     res.send(tokenForUser(req.user));
   });
 
@@ -42,7 +25,7 @@ export function setupLocalLogin(app) {
     res.send({id: req.user.id, username: req.user.username});
   });
 
-  app.get('/user', (req, res)=>{
+  app.get('/user', passport.authenticate('jwt', {session: false}), (req, res)=>{
     if (req.user) {
         res.send({id: req.user._id, username: req.user.username});
     } else {
@@ -50,8 +33,4 @@ export function setupLocalLogin(app) {
     }
   });
 
-  app.get('/logout', (req, res) => {
-    req.logout();
-    res.redirect('/');
-  });
 }
