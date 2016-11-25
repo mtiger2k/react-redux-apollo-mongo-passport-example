@@ -17,10 +17,10 @@ This is a starter boilerplate app I've put together using the following technolo
 * [Redux](https://github.com/rackt/redux)'s futuristic [Flux](https://facebook.github.io/react/blog/2014/05/06/flux.html) implementation
 * [React Router Redux](https://github.com/reactjs/react-router-redux) Redux/React Router bindings.
 * [redux-form](https://github.com/erikras/redux-form) to manage form state in Redux
-* [graphql](https://github.com/facebook/graphql) GraphQL is a query language and execution engine tied to any backend service. 
+* [graphql](https://github.com/facebook/graphql) GraphQL is a query language and execution engine tied to any backend service.
 * [graphql-server-express](https://github.com/apollostack/graphql-server) GraphQL Server is a community-maintained open-source GraphQL server.
 * [react-apollo](https://github.com/apollostack/react-apollo) Use your GraphQL server data in your React components, with the Apollo Client.
-* [apollo-client](https://github.com/apollostack/apollo-client) Apollo Client can be used in any JavaScript frontend where you want to use data from a GraphQL server. 
+* [apollo-client](https://github.com/apollostack/apollo-client) Apollo Client can be used in any JavaScript frontend where you want to use data from a GraphQL server.
 * [Express](http://expressjs.com)
 * [Mongoose](https://github.com/Automattic/mongoose)
 * [passport](https://github.com/jaredhanson/passport)
@@ -60,7 +60,7 @@ Fullly leverage apollo [server side rendering](http://dev.apollodata.com/react/s
 
 #### Client Side
 
-Use react-apllo and apollo-client to fetch data via graphql api.
+Use react-apollo and apollo-client to fetch data via graphql api.
 
 #### API Server
 
